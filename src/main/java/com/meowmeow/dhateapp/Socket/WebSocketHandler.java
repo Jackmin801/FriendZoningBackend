@@ -2,6 +2,7 @@ package com.meowmeow.dhateapp.Socket;
 
 import com.meowmeow.dhateapp.Chat.ChatService;
 import com.meowmeow.dhateapp.Profile.UserProfileService;
+import com.meowmeow.dhateapp.troll.TrollService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.socket.*;
@@ -20,6 +21,9 @@ public class WebSocketHandler extends AbstractWebSocketHandler {
 
     @Autowired
     UserProfileService userProfileService;
+
+    @Autowired
+    TrollService trollService;
 
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
@@ -65,7 +69,7 @@ public class WebSocketHandler extends AbstractWebSocketHandler {
                 sender = socketService.getUsernameFromId(session.getId());
                 recipient = words[1];
                 System.out.println(String.format("%s sent a message to %s",sender,recipient));
-                String msg = words[2]+" trolololo";
+                String msg = trollService.trollify(words[2]);
                 // Update Model
                 chatService.addToConvo(sender,recipient,msg);
                 // Update View
