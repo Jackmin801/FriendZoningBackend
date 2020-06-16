@@ -2,11 +2,13 @@ package com.meowmeow.dhateapp.Socket;
 
 import com.meowmeow.dhateapp.Chat.ChatService;
 import com.meowmeow.dhateapp.Profile.UserProfileService;
-import com.meowmeow.dhateapp.troll.TrollService;
+import com.meowmeow.dhateapp.Troll.TrollService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.socket.*;
 import org.springframework.web.socket.handler.AbstractWebSocketHandler;
+
+import java.util.UUID;
 
 @Controller
 public class WebSocketHandler extends AbstractWebSocketHandler {
@@ -32,8 +34,10 @@ public class WebSocketHandler extends AbstractWebSocketHandler {
         String recipient="";
         switch(words[0]){
             case "CLAIM":
-                if(socketService.claimSocket(session,words[1])){
-                    System.out.println(words[1]+" claims "+session.getId()+" using key "+words[2]);
+                sender = words[1];
+                UUID key = UUID.fromString(words[2]);
+                if(socketService.claimSocket(session,sender,key)){
+                    System.out.println(sender+" claims "+session.getId()+" using key "+key);
                 }
                 break;
             case "START":

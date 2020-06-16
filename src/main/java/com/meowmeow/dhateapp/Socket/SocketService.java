@@ -1,13 +1,20 @@
 package com.meowmeow.dhateapp.Socket;
 
+import com.meowmeow.dhateapp.Authentication.AuthenticateService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.UUID;
 
 @Service
 public class SocketService {
+
+    @Autowired
+    AuthenticateService authenticateService;
+
     private HashMap<String, String> socketIdToUser;
     private HashMap<String, WebSocketSession> userToSocket;
 
@@ -32,8 +39,9 @@ public class SocketService {
         return socketIdToUser.get(id);
     }
 
-    public boolean claimSocket(WebSocketSession session, String username){
+    public boolean claimSocket(WebSocketSession session, String username, UUID key){
         // Authenticate?
+        if(!authenticateService.internalAuth(username,key))return false;
         // Assign socketId to the user
         socketIdToUser.put(session.getId(),username);
         // Close previous socket to user

@@ -1,4 +1,4 @@
-package com.meowmeow.dhateapp.troll;
+package com.meowmeow.dhateapp.Troll;
 
 import org.springframework.stereotype.Service;
 
@@ -18,6 +18,7 @@ public class TrollService {
         text = text.replaceAll("R","W");
         text = text.replaceAll("N","Ny");
         text = text.replaceAll("n","ny");
+        text = text.replaceAll("ove","uv");
         return text+" uwu";
     }
 }
