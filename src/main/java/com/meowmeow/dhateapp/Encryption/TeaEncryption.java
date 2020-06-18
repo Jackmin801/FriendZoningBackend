@@ -9,6 +9,7 @@ public class TeaEncryption implements Encryption {
         for(int i=0;i<temp.length-8;i+=8){
             encrypt64(temp,i,key);
         }
+
         return Base64.getEncoder().encodeToString(temp);
     }
 

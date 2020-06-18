@@ -14,6 +14,12 @@ public class RegistrationHandler {
     @Autowired
     RegistrationService registrationService;
 
+    @GetMapping("/check")
+    public boolean check(@RequestParam(name = "username", defaultValue = "")String username,
+                         @RequestParam(name = "email", defaultValue = "")String email){
+        return registrationService.check(new LoginCredentials(username,email,""));
+    }
+
     @PostMapping
     public boolean register(@RequestBody RegistrationForm form){
         boolean valid = registrationService.check(form.getLoginCredentials());

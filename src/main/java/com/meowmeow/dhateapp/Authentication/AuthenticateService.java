@@ -21,6 +21,7 @@ public class AuthenticateService {
     }
 
     public boolean internalAuth(String username, UUID key){
+        //return true;
         Map<Object, Object> temp = redisTemplate.opsForHash().entries(getEmail(username));
         UUID realKey = null;
         for (Object i:temp.keySet())realKey=(UUID)temp.get(i);

@@ -27,7 +27,7 @@ public class SearchController {
     @GetMapping(path = "/{username}")
     public List<SearchResult> query(
             @PathVariable("username")String username,
-            @RequestParam(name = "dist", defaultValue = "100")int distance,
+            @RequestParam(name = "dist", defaultValue = "10000")int distance,
             @RequestParam(name = "gender", defaultValue = "both")String gender
     ){
         return searchService.search(username,distance,gender);

@@ -1,5 +1,9 @@
 package com.meowmeow.dhateapp.Chat;
 
+import com.meowmeow.dhateapp.Encryption.Encryption;
+import com.meowmeow.dhateapp.Encryption.Key;
+import com.meowmeow.dhateapp.Encryption.TeaEncryption;
+import com.meowmeow.dhateapp.Encryption.TeaKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -9,13 +13,16 @@ import java.util.*;
 
 @Service
 public class ChatService {
+    private Key key;
+    private Encryption encryption;
 
     @Autowired
     @Qualifier("ChatTemplate")
     RedisTemplate<String, Object> redisTemplate;
 
-    public void test(){
-
+    public ChatService(){
+        key = new TeaKey(UUID.fromString("d61e515e-f379-4cf5-a2da-b2458419a455"));
+        encryption = new TeaEncryption();
     }
     public boolean checkForChat(String sender, String recipient){
         return redisTemplate.opsForHash().hasKey(sender,recipient);
@@ -23,6 +30,8 @@ public class ChatService {
     public void startConvo(String sender, String recipient){
         // Form greeting
         String greeting = String.format("Hello %s, want to be friends?",recipient);
+        // Encrypt
+        greeting = encryption.encrypt(greeting,key);
         // Create conversations
         Conversation one = new Conversation(null,recipient);
         Conversation two = new Conversation(null, sender);
@@ -35,6 +44,8 @@ public class ChatService {
     }
 
     public void addToConvo(String sender, String recipient, String msg){
+        // Encrypt
+        msg = encryption.encrypt(msg,key);
         // Get the conversations
         Conversation own = (Conversation) redisTemplate.opsForHash().get(sender,recipient);
         Conversation other = (Conversation) redisTemplate.opsForHash().get(recipient,sender);
@@ -51,7 +62,12 @@ public class ChatService {
     }
 
     private List<Message> getMessages(UUID uid){
-        return (List<Message>)(Object)redisTemplate.opsForList().range(uid.toString(),0,-1);
+        List<Message> ret = (List<Message>)(Object)redisTemplate.opsForList().range(uid.toString(),0,-1);
+        for (Message i:ret) {
+            // decrypt
+            i.setMsgText(encryption.decrypt(i.getMsgText(),key));
+        }
+        return ret;
     }
 
     public List<Conversation> getConvos(String user){
@@ -61,7 +77,10 @@ public class ChatService {
             Conversation singleConvo = (Conversation) conversations.get(i);
             singleConvo.setMsg(getMessages(singleConvo.getUid()));
             ret.add(singleConvo);
+            // decrypt
+            singleConvo.setLastMsgText(encryption.decrypt(singleConvo.getLastMsgText(),key));
         }
+        Collections.sort(ret);
         return ret;
     }
 

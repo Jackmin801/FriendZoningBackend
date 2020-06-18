@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class Conversation implements Serializable {
+public class Conversation implements Serializable,Comparable<Conversation> {
     private UUID uid;
     private int unreadMsgNum;
     private LocalDateTime lastMsgTime;
@@ -100,5 +100,10 @@ public class Conversation implements Serializable {
 
     public List<Message> getMsg() {
         return msg;
+    }
+
+    @Override
+    public int compareTo(Conversation o) {
+        return -getLastMsgTime().compareTo(o.getLastMsgTime());
     }
 }

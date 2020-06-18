@@ -51,6 +51,7 @@ public class SearchService {
         ArrayList<SearchResult> ret = new ArrayList<>();
         for (Object i:userCoords.keySet()) {
             //If its the same person dont match lol
+            // USE EQUALS!!!
             if(username.equalsIgnoreCase(i.toString()))continue;
             //Find distance
             int distance = (int)(Math.floor(distance(radcoord,(RadCoordinate) userCoords.get(i))*10));

@@ -25,7 +25,7 @@ public class UserProfileController {
 
     @GetMapping(value = "/picture/{username}",
             produces = MediaType.IMAGE_JPEG_VALUE)
-    public @ResponseBody byte[] test(@PathVariable("username") String username) throws IOException {
+    public @ResponseBody byte[] getProfilePic(@PathVariable("username") String username) throws IOException {
         return userProfileService.getProfilePic(username);
     }
 

@@ -37,8 +37,8 @@ public class SearchResult implements Comparable<SearchResult> {
 
     @Override
     public int compareTo(SearchResult o) {
-        if(this.match > o.match) return 1;
-        if(this.match < o.match) return -1;
+        if(this.match < o.match) return 1;
+        if(this.match > o.match) return -1;
         return 0;
     }
 }
